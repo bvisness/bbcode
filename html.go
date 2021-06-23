@@ -15,6 +15,7 @@ import (
 type HTMLTag struct {
 	Name     string
 	Value    string
+	Raw      bool // do not HTML-escape the value
 	Attrs    map[string]string
 	Children []*HTMLTag
 }
@@ -36,7 +37,9 @@ func (t *HTMLTag) String() string {
 // The html representation of the tag with or without sorted arguments.
 func (t *HTMLTag) Compile(sorted bool) string {
 	var value string
-	if len(t.Value) > 0 {
+	if t.Raw {
+		value = t.Value
+	} else if len(t.Value) > 0 {
 		value = html.EscapeString(t.Value)
 	}
 
